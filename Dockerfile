@@ -1,35 +1,29 @@
 FROM centos:7
 
-MAINTAINER Martin Vilche <mfvilche@gmail.com>
+ENV MAVEN_VERSION=3.6.0 \
+JRE_VERSION=java-11-openjdk \
+JDK_VERSION=java-11-openjdk-devel
 
-ENV MAVEN_VERSION=3.6.0
-
-# Docker Image Metadata
-LABEL io.k8s.description="Platform for building (Maven) and running plain Java applications" \
+LABEL autor="Martin Vilche <mfvilche@gmail.com>" \
+      io.k8s.description="Compilador de aplicaciones java con maven s2i" \
       io.k8s.display-name="Java Applications" \
       io.openshift.tags="builder,java,maven" \
       io.openshift.expose-services="8080" \
-      org.jboss.deployments-dir="/deployments" \
-      io.openshift.s2i.scripts-url=image:///usr/libexec/s2i
+      org.jboss.deployments-dir="/opt/app-root" \
+      io.openshift.s2i.scripts-url="image:///usr/libexec/s2i"
 
-# Install Java
-RUN INSTALL_PKGS="which wget java-1.8.0-openjdk java-1.8.0-openjdk-devel" && \
-    yum install -y $INSTALL_PKGS && \
-    rpm -V $INSTALL_PKGS && \
-    yum clean all -y && \
-    mkdir -p /opt/s2i/destination /opt/app-root
+RUN yum install $JDK_VERSION $JRE_VERSION wget git which -y && mkdir -p /opt/app-root /opt/maven && \
+wget -q http://www-eu.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz && \
+tar xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz -C /opt/maven && rm apache-maven-${MAVEN_VERSION}-bin.tar.gz && \
+ln -s /opt/maven/apache-maven-${MAVEN_VERSION}/bin/mvn /usr/bin/mvn && yum clean all -y && rm -rf /var/cache/yum/*
 
-# Install Maven
-RUN wget -q http://www-eu.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz && \
-    mkdir /opt/maven && \
-    tar xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz -C /opt/maven && \
-    rm apache-maven-${MAVEN_VERSION}-bin.tar.gz && \
-    ln -s /opt/maven/apache-maven-${MAVEN_VERSION}/bin/mvn /usr/local/bin/mvn
+COPY s2i/bin/ /usr/libexec/s2i
+COPY config/settings.xml /home/s2i/.m2/settings.xml
+RUN adduser s2i && chown -R s2i:s2i /opt /usr/libexec/s2i /home/s2i/
 
-COPY ./s2i/bin/ /usr/libexec/s2i
-RUN chown -R 1001:1001 /opt /usr/libexec/s2i
-WORKDIR /opt
-USER 1001
+WORKDIR /opt/app-root
+
+USER s2i
 
 EXPOSE 8080
 

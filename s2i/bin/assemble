@@ -10,7 +10,6 @@
 set -e
 shopt -s dotglob
 
-# If the 's2i-maven-java' assemble script is executed with the '-h' flag, print the usage.
 if [[ "$1" == "-h" ]]; then
 	exec /usr/libexec/s2i/usage
 fi
@@ -20,21 +19,30 @@ if [ ! -f /tmp/src/pom.xml ]; then
   exit 1
 fi
 
-# Restore artifacts from the previous build (if they exist).
-#
 if [ -d /tmp/artifacts/.m2 ]; then
   echo "---> Restoring build artifacts..."
   mv /tmp/artifacts/.m2 "$HOME"/
 fi
 
-echo "---> Installing application source..."
-cp -Rf /tmp/src/. ./
+echo "---> INSTALANDO CODIGO FUENTE..."
+mkdir /opt/src
+cp -Rf /tmp/src/* /opt/src/
 
-echo "---> Building application from source..."
-mvn ${MVN_GOALS:-clean package} -DskipTests=${MVN_SKIP_TESTS:-true} \
-  -Dmaven.skip.tests=${MVN_SKIP_TESTS:-true} ${MVN_OPTS}
 
-echo "---> Copying built application to app-root..."
-# TODO this may fail if there are more than one jar generated
-cp -a /opt/app-root/src/target/*.jar /opt/app-root/app.jar
+if [ -z "$EXTRA_REPO" ]; then
+echo "NO EXTRA_REPO ENCONTRADO"
+else
+echo "EXTRA_REPO ENCONTRADO - COMPILANDO REPOSITORIO ADICIONAL.."
+mkdir /opt/extra_repo && cd /opt/extra_repo && \
+git clone $EXTRA_REPO . && \
+mvn ${MVN_GOALS:-clean install} -DskipTests=${MVN_SKIP_TESTS:-true} -Dmaven.skip.tests=${MVN_SKIP_TESTS:-true} ${MVN_OPTS} && \
+echo "COMPILADO EXTRA_REPO FINALIZADO - LIMPIANDO DIRECTORIOS.." && rm -rf /opt/extra_repo
+fi
+echo "---> COMPILANDO CODIGO FUENTE..."
+cd /opt/src && mvn ${MVN_GOALS:-clean package} -DskipTests=${MVN_SKIP_TESTS:-true} -Dmaven.skip.tests=${MVN_SKIP_TESTS:-true} ${MVN_OPTS} && \
+echo "---> COPIANDO APLICACION GENERADA AL DIRECTORIO DE DEPLOY..."
+find . -name '*thorntail.jar' | xargs cp -t /opt/app-root/app.jar || find . -name '*swarm.jar' | xargs cp -t /opt/app-root/app.jar && \
+echo "APP INSTALADA!" && \
+rm -rf /opt/src /tmp/src
 
+#cp -rf /opt/src/target/*-swarm.jar /opt/app-root/app.jar || cp -rf /opt/src/target/*-thorntail.jar /opt/app-root/app.jar
