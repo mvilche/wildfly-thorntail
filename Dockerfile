@@ -18,12 +18,12 @@ tar xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz -C /opt/maven && rm apache-mave
 ln -s /opt/maven/apache-maven-${MAVEN_VERSION}/bin/mvn /usr/bin/mvn && yum clean all -y && rm -rf /var/cache/yum/*
 
 COPY s2i/bin/ /usr/libexec/s2i
-COPY config/settings.xml /home/s2i/.m2/settings.xml
-RUN adduser s2i && chown -R s2i:s2i /opt /usr/libexec/s2i /home/s2i/
+RUN adduser -u 1001 s2i && chown -R 1001:1001 /opt /usr/libexec/s2i
+COPY --chown=1001:1001 config/settings.xml /home/s2i/.m2/settings.xml
 
 WORKDIR /opt/app-root
 
-USER s2i
+USER 1001
 
 EXPOSE 8080
 
