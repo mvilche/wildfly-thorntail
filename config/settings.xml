@@ -194,6 +194,7 @@
   </profiles>
   <activeProfiles>
     <activeProfile>securecentral</activeProfile>
+    <activeProfile>insecurecentral</activeProfile>
   </activeProfiles>
   <servers>
     <server>
