@@ -4,4 +4,5 @@ GIT_COMMITTER_EMAIL=maven@s2i.com
 ######################
 ######extra repo####
 #EXTRA_REPO=http://git.sofis.com.uy/mvilche/shared.git
+#EXTRA_REPO_MVN_COMMAND=mvn clean deploy
 ####################
