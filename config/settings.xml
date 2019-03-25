@@ -23,15 +23,6 @@
     <url>http://nexus:8081/nexus/content/repositories/saip</url>
   </repository>
       </repositories>
-      <pluginRepositories>
-        <pluginRepository>
-          <id>central</id>
-          <url>http://repo1.maven.org/maven2</url>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-        </pluginRepository>
-      </pluginRepositories>
     </profile>
 
   </profiles>
