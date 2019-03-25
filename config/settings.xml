@@ -7,8 +7,14 @@
     <mirror>
       <id>central-proxy</id>
       <name>Local proxy of central repo</name>
-      <url>http://nexus:8081/nexus/content/repositories/central</url>
+      <url>http://nexus-saip.paas.red.uy/nexus/content/repositories/central</url>
       <mirrorOf>central</mirrorOf>
+    </mirror>
+    <mirror>
+      <id>jboss-proxy</id>
+      <name>Local proxy of central repo</name>
+      <url>http://nexus-saip.paas.red.uy/nexus/content/repositories/jboss</url>
+      <mirrorOf>jboss</mirrorOf>
     </mirror>
   </mirrors>
 
@@ -19,7 +25,7 @@
       <repositories>
     <repository>
     <id>saip</id>
-    <url>http://nexus:8081/nexus/content/repositories/saip</url>
+    <url>http://nexus-saip.paas.red.uy/nexus/content/repositories/saip</url>
   </repository>
       </repositories>
     </profile>
