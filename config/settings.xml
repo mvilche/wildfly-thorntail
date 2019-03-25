@@ -17,7 +17,6 @@
     <profile>
       <id>insecurecentral</id>
       <repositories>
-  </repository>
     <repository>
     <id>saip</id>
     <url>http://nexus:8081/nexus/content/repositories/saip</url>
