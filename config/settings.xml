@@ -3,13 +3,14 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
 
- <mirrors>
-   <!-- ### configured mirrors ### -->
- </mirrors>
-
- <proxies>
-   <!-- ### configured http proxy ### -->
-  </proxies>
+  <mirrors>
+    <mirror>
+      <id>central-proxy</id>
+      <name>Local proxy of central repo</name>
+      <url>http://nexus:8081/nexus/content/repositories/central</url>
+      <mirrorOf>central</mirrorOf>
+    </mirror>
+  </mirrors>
 
   <profiles>
     <!-- central repositories via HTTP. Disabled by default. -->
@@ -24,12 +25,8 @@
           </releases>
   </repository>
     <repository>
-    <id>releases</id>
+    <id>saip</id>
     <url>http://nexus:8081/nexus/content/repositories/saip</url>
-  </repository>
-    <repository>
-    <id>releases</id>
-    <url>http://nexus:8081/nexus/content/repositories/releases</url>
   </repository>
       </repositories>
       <pluginRepositories>
