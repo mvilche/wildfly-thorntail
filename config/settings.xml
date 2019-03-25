@@ -177,7 +177,7 @@
   </repository>
     <repository>
     <id>releases</id>
-    <url>http://nexus:8080/nexus/content/repositories/saip</url>
+    <url>http://nexus:8081/nexus/content/repositories/saip</url>
   </repository>
       </repositories>
       <pluginRepositories>
@@ -195,4 +195,11 @@
   <activeProfiles>
     <activeProfile>securecentral</activeProfile>
   </activeProfiles>
+  <servers>
+    <server>
+      <id>saip</id>
+      <username>admin</username>
+      <password>admin123</password>
+    </server>
+  </servers>
 </settings>
