@@ -7,31 +7,31 @@
     <mirror>
       <id>central-proxy</id>
       <name>Local proxy of central repo</name>
-      <url>http://nexus-saip.paas.red.uy/nexus/content/repositories/central</url>
+      <url>http://nexus:8081/nexus/content/repositories/central</url>
       <mirrorOf>central</mirrorOf>
     </mirror>
     <mirror>
       <id>jboss-proxy</id>
       <name>Local proxy of central repo</name>
-      <url>http://nexus-saip.paas.red.uy/nexus/content/repositories/jboss</url>
+      <url>http://nexus:8081/nexus/content/repositories/jboss</url>
       <mirrorOf>jboss-public-repository-group</mirrorOf>
     </mirror>
      <mirror>
       <id>jboss-proxy-public</id>
       <name>Local proxy of central repo</name>
-      <url>http://nexus-saip.paas.red.uy/nexus/content/repositories/jboss-public</url>
+      <url>http://nexus:8081/nexus/content/repositories/jboss-public</url>
       <mirrorOf>jboss-public-repository-group</mirrorOf>
     </mirror>
      <mirror>
       <id>saip</id>
       <name>Local saip repo</name>
-      <url>http://nexus-saip.paas.red.uy/nexus/content/repositories/saip</url>
+      <url>http://nexus:8081/nexus/content/repositories/saip</url>
       <mirrorOf>saip</mirrorOf>
     </mirror>
      <mirror>
       <id>redhat</id>
       <name>Local redhat repo</name>
-      <url>http://nexus-saip.paas.red.uy/nexus/content/repositories/redhat</url>
+      <url>http://nexus:8081/nexus/content/repositories/redhat</url>
       <mirrorOf>redhat-ga-repository</mirrorOf>
     </mirror>
 
@@ -44,7 +44,7 @@
       <repositories>
     <repository>
     <id>saip</id>
-    <url>http://nexus-saip.paas.red.uy/nexus/content/repositories/saip</url>
+    <url>http://nexus:8081/nexus/content/repositories/saip</url>
   </repository>
       </repositories>
           <pluginRepositories>
