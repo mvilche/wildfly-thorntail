@@ -6,7 +6,6 @@
 # For more information see the documentation:
 #	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
 #
-#JAVA_OPTS="-XX:+UseParallelGC -Dfile.encoding=UTF8 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=40 -XX:+ExitOnOutOfMemoryError 
--XX:+UnlockExperimentalVMOptions"
+#JAVA_OPTS="-XX:+UseParallelGC -Dfile.encoding=UTF8 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=40 -XX:+ExitOnOutOfMemoryError -XX:+UnlockExperimentalVMOptions"
 #exec java $JAVA_OPTS -jar /opt/app-root/app.jar $APP_OPTIONS
-exec java -jar /opt/app-root/app.jar $APP_OPTIONS
+exec java $JAVA_OPTS -jar /opt/app-root/app.jar $APP_OPTIONS
