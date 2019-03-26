@@ -23,12 +23,6 @@
       <mirrorOf>jboss-public-repository-group</mirrorOf>
     </mirror>
      <mirror>
-      <id>saip</id>
-      <name>Local saip repo</name>
-      <url>http://nexus:8081/nexus/content/repositories/saip</url>
-      <mirrorOf>saip</mirrorOf>
-    </mirror>
-     <mirror>
       <id>redhat</id>
       <name>Local redhat repo</name>
       <url>http://nexus:8081/nexus/content/repositories/redhat</url>
