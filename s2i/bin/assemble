@@ -36,7 +36,7 @@ echo "EXTRA_REPO ENCONTRADO - COMPILANDO REPOSITORIO ADICIONAL.."
 mkdir /opt/extra_repo && cd /opt/extra_repo && \
 git clone $EXTRA_REPO . && \
 $EXTRA_REPO_MVN_COMMAND ${MVN_OPTS} && \
-echo "COMPILADO EXTRA_REPO FINALIZADO - LIMPIANDO DIRECTORIOS.." && rm -rf /opt/extra_repo
+echo "COMPILADO EXTRA_REPO FINALIZADO - LIMPIANDO DIRECTORIOS.." && rm -rf /opt/extra_repo /home/s2i/.m2
 fi
 echo "---> COMPILANDO CODIGO FUENTE..."
 cd /opt/src && mvn ${MVN_GOALS:-clean package} -DskipTests=${MVN_SKIP_TESTS:-true} -Dmaven.skip.tests=${MVN_SKIP_TESTS:-true} ${MVN_OPTS} && \
