@@ -37,8 +37,8 @@
       <id>insecurecentral</id>
       <repositories>
     <repository>
-    <id>release</id>
-    <url>http://nexus:8081/nexus/content/repositories/release</url>
+    <id>nexus</id>
+    <url>http://nexus:8081/nexus/content/repositories/nexus</url>
   </repository>
       </repositories>
           <pluginRepositories>
@@ -58,7 +58,7 @@
   </activeProfiles>
   <servers>
     <server>
-      <id>release</id>
+      <id>nexus</id>
       <username>admin</username>
       <password>admin123</password>
     </server>
