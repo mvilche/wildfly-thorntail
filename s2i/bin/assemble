@@ -36,10 +36,10 @@ echo "EXTRA_REPO ENCONTRADO - COMPILANDO REPOSITORIO ADICIONAL.."
 mkdir /opt/extra_repo && cd /opt/extra_repo && \
 git clone $EXTRA_REPO . && \
 $EXTRA_REPO_MVN_COMMAND ${MVN_OPTS} && \
-echo "COMPILADO EXTRA_REPO FINALIZADO - LIMPIANDO DIRECTORIOS.." && rm -rf /opt/extra_repo /home/s2i/.m2
+echo "COMPILADO EXTRA_REPO FINALIZADO - LIMPIANDO DIRECTORIOS.." && rm -rf /opt/extra_repo 
 fi
 echo "---> COMPILANDO CODIGO FUENTE..."
 cd /opt/src && mvn ${MVN_GOALS:-clean package} -DskipTests=${MVN_SKIP_TESTS:-true} -Dmaven.skip.tests=${MVN_SKIP_TESTS:-true} ${MVN_OPTS} && \
 echo "---> COPIANDO APLICACION GENERADA AL DIRECTORIO DE DEPLOY..."
 find . -name '*-thorntail.jar' | xargs cp -t . || find . -name '*-swarm.jar' | xargs cp -t . && mv *.jar /opt/app-root/app.jar && echo "APP INSTALADA!" && \
-rm -rf /opt/src /tmp/src
+rm -rf /opt/src /tmp/src /home/s2i/.m2
