@@ -9,9 +9,17 @@
 - Openshift compatible
 
 
+### Variables
+
+
+| Variable | Detalle |
+| ------ | ------ |
+| TIMEZONE | Define la zona horaria a utilizar (America/Montevideo, America/El_salvador) |
+| JAVA_OPTS | Define parametros de la jvm |
+| APP_OPTIONS | Permite setear configuraciones adicionales de la app |
+
+
 License
 ----
 
 Martin vilche
-Sofis Solutions
-
