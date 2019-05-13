@@ -12,7 +12,7 @@ LABEL autor="Martin Vilche <mfvilche@gmail.com>" \
       org.jboss.deployments-dir="/opt/app-root" \
       io.openshift.s2i.scripts-url="image:///usr/libexec/s2i"
 
-RUN yum install $JDK_VERSION $JRE_VERSION wget git which openssh-clients -y && mkdir -p /opt/app-root /opt/maven && \
+RUN yum install $JDK_VERSION $JRE_VERSION wget git telnet which openssh-clients -y && mkdir -p /opt/app-root /opt/maven && \
 wget -q http://www-eu.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz && \
 tar xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz -C /opt/maven && rm apache-maven-${MAVEN_VERSION}-bin.tar.gz && \
 ln -s /opt/maven/apache-maven-${MAVEN_VERSION}/bin/mvn /usr/bin/mvn && yum clean all -y && rm -rf /var/cache/yum/*
