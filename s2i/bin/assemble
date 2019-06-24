@@ -37,6 +37,7 @@ else
 echo "NEXUS_MIRROR_URL ENCONTRADO - AGREGANDO REPOSITORIO"
 
 if [ ! -d /home/s2i/.m2 ]; then
+  mkdir /home/s2i/.m2
   touch /home/s2i/.m2/settings.xml
 fi
 
