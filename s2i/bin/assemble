@@ -33,7 +33,6 @@ if [ -z "$NEXUS_MIRROR_URL" ]; then
 echo "NO NEXUS_MIRROR_URL ENCONTRADO"
 else
 echo "NEXUS_MIRROR_URL ENCONTRADO - AGREGANDO REPOSITORIO"
-rm -rf /home/s2i/.m2/settings.xml
 cat << EOF > /home/s2i/.m2/settings.xml
 
 <?xml version="1.0" encoding="UTF-8"?>
