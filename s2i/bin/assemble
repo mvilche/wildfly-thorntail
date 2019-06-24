@@ -29,6 +29,36 @@ mkdir /opt/src
 cp -Rf /tmp/src/* /opt/src/
 
 
+if [ -z "$NEXUS_MIRROR_URL" ]; then
+echo "NO NEXUS_MIRROR_URL ENCONTRADO"
+else
+echo "NEXUS_MIRROR_URL ENCONTRADO - AGREGANDO REPOSITORIO"
+rm -rf /home/s2i/.m2/settings.xml
+cat << EOF > /home/s2i/.m2/settings.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <mirrors>
+    <mirror>
+      <id>central</id>
+      <name>central</name>
+      <url>$NEXUS_MIRROR_URL</url>
+      <mirrorOf>*</mirrorOf>
+    </mirror>
+  </mirrors>
+
+
+</settings>
+
+EOF
+
+fi
+
+
+
 if [ -z "$EXTRA_REPO" ]; then
 echo "NO EXTRA_REPO ENCONTRADO"
 else

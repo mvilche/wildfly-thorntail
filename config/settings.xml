@@ -3,64 +3,11 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
 
-  <mirrors>
-    <mirror>
-      <id>central-proxy</id>
-      <name>Local proxy of central repo</name>
-      <url>http://nexus:8081/nexus/content/repositories/central</url>
-      <mirrorOf>central</mirrorOf>
-    </mirror>
-    <mirror>
-      <id>jboss-proxy</id>
-      <name>Local proxy of central repo</name>
-      <url>http://nexus:8081/nexus/content/repositories/jboss</url>
-      <mirrorOf>jboss-public-repository-group</mirrorOf>
-    </mirror>
-     <mirror>
-      <id>jboss-proxy-public</id>
-      <name>Local proxy of central repo</name>
-      <url>http://nexus:8081/nexus/content/repositories/jboss-public</url>
-      <mirrorOf>jboss-public-repository-group</mirrorOf>
-    </mirror>
-     <mirror>
-      <id>redhat</id>
-      <name>Local redhat repo</name>
-      <url>http://nexus:8081/nexus/content/repositories/redhat</url>
-      <mirrorOf>redhat-ga-repository</mirrorOf>
-    </mirror>
+<repositories>
+   <repository>
+       <id>*</id>
+       <url>$NEXUS_REPO</url>
+   </repository>
+</repositories>
 
-  </mirrors>
-
-  <profiles>
-    <!-- central repositories via HTTP. Disabled by default. -->
-    <profile>
-      <id>insecurecentral</id>
-      <repositories>
-    <repository>
-    <id>nexus</id>
-    <url>http://nexus:8081/nexus/content/repositories/nexus</url>
-  </repository>
-      </repositories>
-          <pluginRepositories>
-        <pluginRepository>
-          <id>central</id>
-          <url>http://repo1.maven.org/maven2</url>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-        </pluginRepository>
-      </pluginRepositories>
-    </profile>
-
-  </profiles>
-  <activeProfiles>
-    <activeProfile>insecurecentral</activeProfile>
-  </activeProfiles>
-  <servers>
-    <server>
-      <id>nexus</id>
-      <username>admin</username>
-      <password>admin123</password>
-    </server>
-  </servers>
 </settings>
