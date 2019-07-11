@@ -77,5 +77,5 @@ fi
 echo "---> COMPILANDO CODIGO FUENTE..."
 cd /opt/src && mvn clean package -Dfile.encoding=UTF-8 -DskipTests=true ${MVN_OPTS} && \
 echo "---> COPIANDO APLICACION GENERADA AL DIRECTORIO DE DEPLOY..."
-find . -name '*-thorntail.jar' | xargs cp -t . || find . -name '*-swarm.jar' | xargs cp -t . && mv *.jar /opt/app-root/app.jar && echo "APP INSTALADA!" && \
+find . -name '*-thorntail.jar' | xargs cp -rf . || find . -name '*-swarm.jar' | xargs cp -rf . && mv *.jar /opt/app-root/app.jar && echo "APP INSTALADA!" && \
 rm -rf /opt/src /tmp/src /home/s2i/.m2
