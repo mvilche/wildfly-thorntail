@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/sh -e
 #
 # S2I run script for the 'springboot-sti' image.
 # The run script executes the server that runs your application.

@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/sh -e
 #
 # S2I assemble script for the 's2i-maven-java' image.
 # The 'assemble' script builds your application source so that it is ready to run.
@@ -8,7 +8,6 @@
 #
 
 set -e
-shopt -s dotglob
 
 if [[ "$1" == "-h" ]]; then
 	exec /usr/libexec/s2i/usage

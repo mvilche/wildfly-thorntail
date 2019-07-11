@@ -1,8 +1,7 @@
-FROM centos:7
+FROM alpine:3.10
 
-ENV MAVEN_VERSION=3.6.0 \
-JRE_VERSION=java-11-openjdk \
-JDK_VERSION=java-11-openjdk-devel
+ENV MAVEN_VERSION=3.5.4 \
+JDK_VERSION=openjdk8
 
 LABEL autor="Martin Vilche <mfvilche@gmail.com>" \
       io.k8s.description="Compilador de aplicaciones java con maven s2i" \
@@ -12,13 +11,19 @@ LABEL autor="Martin Vilche <mfvilche@gmail.com>" \
       org.jboss.deployments-dir="/opt/app-root" \
       io.openshift.s2i.scripts-url="image:///usr/libexec/s2i"
 
-RUN yum install $JDK_VERSION $JRE_VERSION wget git telnet which openssh-clients -y && mkdir -p /opt/app-root /opt/maven && \
+RUN apk add --update --no-cache $JDK_VERSION wget git busybox-extras which openssh shadow busybox-suid  tzdata msttcorefonts-installer fontconfig
+RUN update-ms-fonts && \
+    fc-cache -f && \ 
+mkdir -p /opt/app-root /opt/maven && rm -rf /etc/localtime && \
 wget -q http://www-eu.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz && \
 tar xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz -C /opt/maven && rm apache-maven-${MAVEN_VERSION}-bin.tar.gz && \
-ln -s /opt/maven/apache-maven-${MAVEN_VERSION}/bin/mvn /usr/bin/mvn && yum clean all -y && rm -rf /var/cache/yum/*
+ln -s /opt/maven/apache-maven-${MAVEN_VERSION}/bin/mvn /usr/bin/mvn
 
 COPY s2i/bin/ /usr/libexec/s2i
-RUN adduser -u 1001 s2i && chown -R 1001:1001 /opt /usr/libexec/s2i
+RUN touch /etc/localtime /etc/timezone && adduser -D -u 1001 s2i && usermod -aG 0 s2i && \
+chown -R 1001 /opt /home/s2i /usr/libexec/s2i /etc/localtime /etc/timezone  && \
+chgrp -R 0 /opt /home/s2i /usr/libexec/s2i /etc/localtime /etc/timezone  && \
+chmod -R g=u /opt /usr/libexec/s2i /etc/localtime /etc/timezone
 
 WORKDIR /opt/app-root
 
