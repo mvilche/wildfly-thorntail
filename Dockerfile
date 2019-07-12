@@ -11,7 +11,7 @@ LABEL autor="Martin Vilche <mfvilche@gmail.com>" \
       org.jboss.deployments-dir="/opt/app-root" \
       io.openshift.s2i.scripts-url="image:///usr/libexec/s2i"
 
-RUN apk add --update --no-cache $JDK_VERSION wget git busybox-extras which openssh shadow busybox-suid  tzdata msttcorefonts-installer fontconfig
+RUN apk add --update --no-cache $JDK_VERSION wget git busybox-extras which openssh shadow busybox-suid coreutils tzdata msttcorefonts-installer fontconfig
 RUN update-ms-fonts && \
     fc-cache -f && \ 
 mkdir -p /opt/app-root /opt/maven && rm -rf /etc/localtime && \
