@@ -17,6 +17,9 @@
 | TIMEZONE | Define la zona horaria a utilizar (America/Montevideo, America/El_salvador) |
 | JAVA_OPTS | Define parametros de la jvm |
 | APP_OPTIONS | Permite setear configuraciones adicionales de la app |
+| NEXUS_REPO | Define url repositorio nexus para la descarga de dependencias |
+| EXTRA_REPO | Define url repositorio git extra compila previo |
+
 
 
 License
