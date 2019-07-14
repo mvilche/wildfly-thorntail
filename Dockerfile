@@ -11,7 +11,7 @@ LABEL autor="Martin Vilche <mfvilche@gmail.com>" \
       org.jboss.deployments-dir="/opt/app-root" \
       io.openshift.s2i.scripts-url="image:///usr/libexec/s2i"
 
-RUN apk add --update --no-cache $JDK_VERSION wget git busybox-extras which openssh shadow busybox-suid coreutils tzdata msttcorefonts-installer fontconfig
+RUN apk add --update --no-cache $JDK_VERSION wget bash git busybox-extras which openssh shadow busybox-suid coreutils tzdata msttcorefonts-installer fontconfig
 RUN update-ms-fonts && \
     fc-cache -f && \ 
 mkdir -p /opt/app-root /opt/maven && rm -rf /etc/localtime && \
@@ -20,7 +20,7 @@ tar xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz -C /opt/maven && rm apache-mave
 ln -s /opt/maven/apache-maven-${MAVEN_VERSION}/bin/mvn /usr/bin/mvn
 
 COPY s2i/bin/ /usr/libexec/s2i
-RUN touch /etc/localtime /etc/timezone && adduser -D -u 1001 s2i && usermod -aG 0 s2i && \
+RUN mkdir /opt/config && touch /etc/localtime /etc/timezone && adduser -D -u 1001 s2i && usermod -aG 0 s2i && \
 chown -R 1001 /opt /home/s2i /usr/libexec/s2i /etc/localtime /etc/timezone  && \
 chgrp -R 0 /opt /home/s2i /usr/libexec/s2i /etc/localtime /etc/timezone  && \
 chmod -R g=u /opt /usr/libexec/s2i /etc/localtime /etc/timezone

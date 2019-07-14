@@ -19,6 +19,8 @@
 | APP_OPTIONS | Permite setear configuraciones adicionales de la app |
 | NEXUS_REPO | Define url repositorio nexus para la descarga de dependencias |
 | EXTRA_REPO | Define url repositorio git extra compila previo |
+| TAG_VERSION | Variable usada en el proceso de build para definir la version |
+
 
 
 
