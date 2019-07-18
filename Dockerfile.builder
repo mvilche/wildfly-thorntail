@@ -1,7 +1,7 @@
 FROM alpine:3.10
 
-ENV MAVEN_VERSION=3.5.4 \
-JDK_VERSION=openjdk8
+ENV MAVEN_VERSION=3.6.1 \
+JDK_VERSION=openjdk11-jdk
 
 LABEL autor="Martin Vilche <mfvilche@gmail.com>" \
       io.k8s.description="Compilador de aplicaciones java con maven s2i" \
@@ -11,10 +11,8 @@ LABEL autor="Martin Vilche <mfvilche@gmail.com>" \
       org.jboss.deployments-dir="/opt/app-root" \
       io.openshift.s2i.scripts-url="image:///usr/libexec/s2i"
 
-RUN apk add --update --no-cache $JDK_VERSION wget bash git busybox-extras which openssh shadow busybox-suid coreutils tzdata msttcorefonts-installer fontconfig
-RUN update-ms-fonts && \
-    fc-cache -f && \ 
-mkdir -p /opt/app-root /opt/maven && rm -rf /etc/localtime && \
+RUN apk add --update --no-cache $JDK_VERSION wget bash git busybox-extras which openssh shadow busybox-suid coreutils tzdata
+RUN mkdir -p /opt/app-root /opt/maven && rm -rf /etc/localtime && \
 wget -q http://www-eu.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz && \
 tar xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz -C /opt/maven && rm apache-maven-${MAVEN_VERSION}-bin.tar.gz && \
 ln -s /opt/maven/apache-maven-${MAVEN_VERSION}/bin/mvn /usr/bin/mvn
@@ -24,12 +22,9 @@ RUN mkdir /opt/config && touch /etc/localtime /etc/timezone && adduser -D -u 100
 chown -R 1001 /opt /home/s2i /usr/libexec/s2i /etc/localtime /etc/timezone  && \
 chgrp -R 0 /opt /home/s2i /usr/libexec/s2i /etc/localtime /etc/timezone  && \
 chmod -R g=u /opt /usr/libexec/s2i /etc/localtime /etc/timezone
-
 WORKDIR /opt/app-root
-
+ENV HOME /home/s2i
 USER 1001
-
 EXPOSE 8080
-
 CMD ["/usr/libexec/s2i/usage"]
 

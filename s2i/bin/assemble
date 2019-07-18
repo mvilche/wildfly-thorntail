@@ -21,7 +21,6 @@ if [ ! -f /tmp/src/pom.xml ]; then
 fi
 
 
-
 if [ -d /tmp/artifacts/.m2 ]; then
   echo "---> Restoring build artifacts..."
   mv /tmp/artifacts/.m2 "$HOME"/
@@ -29,11 +28,7 @@ fi
 
 echo "---> INSTALANDO CODIGO FUENTE..." 
 mkdir /opt/src
-mv /tmp/src/.git /opt/src/
 cp -Rf /tmp/src/* /opt/src/
-
-
-
 
 if [ -z "$TAG_VERSION" ]; then
   echo "NO VARIABLE TAG_VERSION ENCONTRADA USANDO latest"
@@ -42,8 +37,6 @@ else
 echo "VARIABLE TAG_VERSION ENCONTRADA USANDO: $TAG_VERSION"
 echo $TAG_VERSION > /opt/version
 fi
-
-
 
 if [ -z "$NEXUS_MIRROR_URL" ]; then
 echo "NO NEXUS_MIRROR_URL ENCONTRADO"
@@ -54,14 +47,9 @@ if [ ! -d /home/s2i/.m2 ]; then
   mkdir /home/s2i/.m2
   touch /home/s2i/.m2/settings.xml
 fi
-
 cat << EOF > /home/s2i/.m2/settings.xml
-
 <?xml version="1.0" encoding="UTF-8"?>
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
-
+<settings>
   <mirrors>
     <mirror>
       <id>central</id>
@@ -70,10 +58,7 @@ cat << EOF > /home/s2i/.m2/settings.xml
       <mirrorOf>*</mirrorOf>
     </mirror>
   </mirrors>
-
-
 </settings>
-
 EOF
 
 fi
@@ -86,11 +71,10 @@ else
 echo "EXTRA_REPO ENCONTRADO - COMPILANDO REPOSITORIO ADICIONAL.."
 mkdir /opt/extra_repo && cd /opt/extra_repo && \
 git clone $EXTRA_REPO . && \
-mvn clean install -Dfile.encoding=UTF-8 -DskipTests=true ${MVN_OPTS} && \
+mvn clean install -Dfile.encoding=UTF-8 -DskipTests=true ${MVN_OPTS} || echo "ERROR AL COMPILAR EXTRA REPO" && exit 1
 echo "COMPILADO EXTRA_REPO FINALIZADO - LIMPIANDO DIRECTORIOS.." && rm -rf /opt/extra_repo 
 fi
 echo "---> COMPILANDO CODIGO FUENTE..."
-cd /opt/src && mvn clean package -Dfile.encoding=UTF-8 -DskipTests=true ${MVN_OPTS} && \
+cd /opt/src && mvn clean package -Dfile.encoding=UTF-8 -DskipTests=true ${MVN_OPTS} || echo "ERROR AL COMPILAR" && exit 1
 echo "---> COPIANDO APLICACION GENERADA AL DIRECTORIO DE DEPLOY..."
-find . -name '*-thorntail.jar' | xargs cp -t . || find . -name '*-swarm.jar' | xargs cp -t . && mv *.jar /opt/app-root/app.jar && echo "APP INSTALADA!" && \
-rm -rf /opt/src /tmp/src /home/s2i/.m2
+find . -name '*-thorntail.jar' | xargs cp -t . || find . -name '*-swarm.jar' | xargs cp -t . && mv *.jar /opt/app-root/app.jar && echo "APP INSTALADA!"
