@@ -23,7 +23,7 @@ fi
 
 if [ -d /tmp/artifacts/.m2 ]; then
   echo "---> Restoring build artifacts..."
-  mv /tmp/artifacts/.m2 "$HOME"/
+  mv /tmp/artifacts/.m2 /home/s2i/
 fi
 
 echo "---> INSTALANDO CODIGO FUENTE..." 
@@ -60,7 +60,6 @@ cat << EOF > /home/s2i/.m2/settings.xml
   </mirrors>
 </settings>
 EOF
-
 fi
 
 
@@ -71,10 +70,26 @@ else
 echo "EXTRA_REPO ENCONTRADO - COMPILANDO REPOSITORIO ADICIONAL.."
 mkdir /opt/extra_repo && cd /opt/extra_repo && \
 git clone $EXTRA_REPO . && \
-mvn clean install -Dfile.encoding=UTF-8 -DskipTests=true ${MVN_OPTS} || echo "ERROR AL COMPILAR EXTRA REPO" && exit 1
+mvn clean install -Dfile.encoding=UTF-8 -DskipTests=true ${MVN_OPTS}
+
+ERR=$?
+    if [ $ERR -ne 0 ]; then
+ echo "LA COMPILACION SALIO CON CODIGO DE ERROR $ERR"
+exit $ERR
+fi
+
 echo "COMPILADO EXTRA_REPO FINALIZADO - LIMPIANDO DIRECTORIOS.." && rm -rf /opt/extra_repo 
 fi
+
 echo "---> COMPILANDO CODIGO FUENTE..."
-cd /opt/src && mvn clean package -Dfile.encoding=UTF-8 -DskipTests=true ${MVN_OPTS} || echo "ERROR AL COMPILAR" && exit 1
+cd /opt/src && mvn clean package -Dfile.encoding=UTF-8 -DskipTests=true ${MVN_OPTS}
+
+ERR=$?
+    if [ $ERR -ne 0 ]; then
+echo "LA COMPILACION SALIO CON CODIGO DE ERROR $ERR"
+exit $ERR
+fi
+
+
 echo "---> COPIANDO APLICACION GENERADA AL DIRECTORIO DE DEPLOY..."
 find . -name '*-thorntail.jar' | xargs cp -t . || find . -name '*-swarm.jar' | xargs cp -t . && mv *.jar /opt/app-root/app.jar && echo "APP INSTALADA!"
