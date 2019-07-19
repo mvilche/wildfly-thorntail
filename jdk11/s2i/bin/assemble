@@ -63,8 +63,11 @@ cat << EOF > /home/s2i/.m2/settings.xml
   </mirrors>
 </settings>
 EOF
+else
+if [ -f /home/s2i/.m2/settings.xml ]
+rm -rf /home/s2i/.m2/settings.xml
 fi
-
+fi
 
 
 if [ -z "$EXTRA_REPO" ]; then

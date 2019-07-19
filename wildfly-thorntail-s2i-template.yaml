@@ -112,7 +112,7 @@
             - name: MVN_OPTS
               value: ${MVN_OPTS}
             - name: JAVA_OPTS
-              value: ${JAVA_OPTS}
+              value: '-Dfile.encoding=UTF8 -XX:+ExitOnOutOfMemoryError -XX:+UnlockExperimentalVMOptions -Djava.net.preferIPv4Stack=true'
           from:
             kind: ImageStreamTag
             name: ${IMAGEN_COMPILADORA}
