@@ -106,6 +106,7 @@ echo "LA COMPILACION SALIO CON CODIGO DE ERROR $ERR"
 exit $ERR
 
 fi
+fi
 
 echo "---> COPIANDO APLICACION GENERADA AL DIRECTORIO DE DEPLOY..."
 find . -name '*-thorntail.jar' | xargs cp -t . || find . -name '*-swarm.jar' | xargs cp -t . && mv *.jar /opt/app-root/app.jar && echo "APP INSTALADA!"
