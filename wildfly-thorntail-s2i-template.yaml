@@ -10,7 +10,7 @@
       openshift.io/display-name: "wildlfy-thorntail-s2i-mvilche"
       iconClass: "icon-wildfly"
       description: >-
-        Compilador de imagenes para microservicios basados en java 8 y maven 3.5.4
+        Compilador de imagenes para microservicios basados en java 11 y maven 3.6.0
         Martin Fabrizzio Vilche.
         https://github.com/mvilche.
 
@@ -58,10 +58,6 @@
                   protocol: TCP
                 - containerPort: 8778
                   protocolo: TCP
-              resources:
-                limits:
-                  cpu: ${CPU_LIMIT}
-                  memory: ${MEMORIA_LIMIT}
               terminationMessagePath: /dev/termination-log
               terminationMessagePolicy: File
           dnsPolicy: ClusterFirst
@@ -107,6 +103,7 @@
       strategy:
         sourceStrategy:
           incremental: true
+          forcePull: true
           env:
             - name: NEXUS_MIRROR_URL
               value: ${NEXUS_MIRROR_URL}
@@ -351,11 +348,3 @@
     - name: APP_OPTIONS
       displayName: Argumento adicional al iniciar el wildfly swarm. Ej Project default externo (-s /opt/config/app.yaml)
       value: ""
-    - name: MEMORIA_LIMIT
-      displayName: limite de memoria ram que tendra el microservicio. Ej 256Mi (256 megabytes)
-      value: "256Mi"
-      required: true
-    - name: CPU_LIMIT
-      displayName: Limite de cpu que tendra el microservicio Ej 1m ( 1 milicore)
-      value: "1m"
-      required: true
