@@ -85,20 +85,6 @@ echo "COMPILADO EXTRA_REPO FINALIZADO - LIMPIANDO DIRECTORIOS.." && rm -rf /opt/
 fi
 
 echo "---> COMPILANDO CODIGO FUENTE..."
-
-if [ ! -z "$MVN_OPTS_COMMAND" ]; then
-echo "MVN_OPTS_COMMAND ENCONTRADO"
-echo "EJECUTANDO:" $MVN_OPTS_COMMAND
-cd /opt/src && $MVN_OPTS_COMMAND
-ERR=$?
-    if [ $ERR -ne 0 ]; then
-echo "LA COMPILACION SALIO CON CODIGO DE ERROR $ERR"
-exit $ERR
-    fi
-else
-
-echo "MVN_OPTS_COMMAND NO ENCONTRADO - UTILIZANDO VALORES POR DEFECTO PARA LA COMPILACION: "
-echo "mvn clean package -Dfile.encoding=UTF-8 -DskipTests=true"
 cd /opt/src && mvn clean package -Dfile.encoding=UTF-8 -DskipTests=true ${MVN_OPTS}
 
 ERR=$?
@@ -106,7 +92,6 @@ ERR=$?
 echo "LA COMPILACION SALIO CON CODIGO DE ERROR $ERR"
 exit $ERR
 
-fi
 fi
 
 echo "---> COPIANDO APLICACION GENERADA AL DIRECTORIO DE DEPLOY..."
