@@ -1,0 +1,60 @@
+#!/bin/sh -e
+#
+# S2I run script for the 'springboot-sti' image.
+# The run script executes the server that runs your application.
+#
+# For more information see the documentation:
+#	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
+#
+
+
+
+	echo "···································································································"
+	echo "MARTIN FABRIZZIO VILCHE - https://github.com/mvilche"
+	echo "···································································································"
+
+
+if [ -z "$TIMEZONE" ]; then
+	echo "···································································································"
+	echo "VARIABLE TIMEZONE NO SETEADA - INICIANDO CON VALORES POR DEFECTO"
+	echo "POSIBLES VALORES: America/Montevideo | America/El_Salvador"
+	echo "···································································································"
+else
+	echo "···································································································"
+	echo "TIMEZONE SETEADO ENCONTRADO: " $TIMEZONE
+	echo "···································································································"
+	cat /usr/share/zoneinfo/$TIMEZONE > /etc/localtime && \
+	echo $TIMEZONE > /etc/timezone
+fi
+
+
+if [ -z "$JAVA_OPTS" ]; then
+
+	echo "···································································································"
+	echo "VARIABLE JAVA_OPTS NO ENCONTRADA"
+	export JAVA_OPTS="-Dfile.encoding=UTF8 -XX:MaxRAMFraction=1 -XX:+ExitOnOutOfMemoryError -XX:+UnlockExperimentalVMOptions -Djava.net.preferIPv4Stack=true"
+	echo "···································································································"
+else
+	echo "···································································································"
+	echo "VARIABLE JAVA_OPTS ENCONTRADA: $JAVA_OPTS"
+	echo "···································································································"
+fi
+
+if [ -z "$APP_OPTIONS" ]; then
+
+	echo "···································································································"
+	echo "VARIABLE APP_OPTIONS NO ENCONTRADA"
+	echo "···································································································"
+else
+	echo "···································································································"
+	echo "VARIABLE APP_OPTIONS ENCONTRADA: $APP_OPTIONS"
+	echo "···································································································"
+fi
+
+
+
+	echo "···································································································"
+	echo "INICIANDO APP..."
+	echo "···································································································"
+
+exec java -javaagent:/usr/libexec/s2i/jolokia-jvm-1.6.2-agent.jar=host=0.0.0.0 $JAVA_OPTS -jar /opt/app-root/*.jar $APP_OPTIONS
