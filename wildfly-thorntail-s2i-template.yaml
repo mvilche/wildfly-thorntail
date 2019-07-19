@@ -117,7 +117,7 @@
             - name: JAVA_OPTS
               value: ${JAVA_OPTS}
           from:
-            kind: DockerImage
+            kind: ImageStreamTag
             name: ${IMAGEN_COMPILADORA}
         type: Source
       successfulBuildsHistoryLimit: 5
@@ -249,11 +249,11 @@
         type: Git
       strategy:
         dockerStrategy:
-          from:
-            kind: ImageStreamTag
-            name: 'alpine:3.10'
+          dockerfilePath: Dockerfile
         type: Docker
       successfulBuildsHistoryLimit: 5
+      triggers:
+        - type: ConfigChange
 
 
   - apiVersion: v1
@@ -288,11 +288,11 @@
         type: Git
       strategy:
         dockerStrategy:
-          from:
-            kind: ImageStreamTag
-            name: 'alpine:3.10'
+          dockerfilePath: Dockerfile
         type: Docker
       successfulBuildsHistoryLimit: 5
+      triggers:
+        - type: ConfigChange
 
   - apiVersion: v1
     kind: ImageStream
@@ -342,7 +342,7 @@
       value: ""
     - name: DOMINIO
       displayName: Dominio de acceso al route
-      value: "miapp.openshift.cluster"
+      value: ""
       required: true
     - name: JAVA_OPTS
       displayName: Parametros jvm para el inicio del microservicio

@@ -12,9 +12,6 @@ set -e
 
 shopt -u dotglob
 
-export JAVA_OPTS="-Dfile.encoding=UTF8 -XX:MaxRAMFraction=1 -XX:+ExitOnOutOfMemoryError -XX:+UnlockExperimentalVMOptions -Djava.net.preferIPv4Stack=true"
-
-
 
 if [[ "$1" == "-h" ]]; then
 	exec /usr/libexec/s2i/usage
