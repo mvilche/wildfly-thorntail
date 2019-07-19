@@ -52,27 +52,12 @@
                   value: ${JAVA_OPTS}
               image: "${APP_NAME}:latest"
               imagePullPolicy: Always
-              livenessProbe:
-                httpGet:
-                  path: ${HEALTH_CHECK}
-                  port: 8080
-                  scheme: HTTP
-                initialDelaySeconds: ${HEALT_INITIAL_TIME}
-
-                timeoutSeconds: ${HEALT_INITIAL_TIME}
-              readinessProbe:
-                httpGet:
-                  path: ${HEALTH_CHECK}
-                  port: 8080
-                  scheme: HTTP
-                initialDelaySeconds: ${HEALT_TIMEOUT}
-                timeoutSeconds: ${HEALT_TIMEOUT}
               name: ${APP_NAME}
               ports:
                 - containerPort: 8080
                   protocol: TCP
                 - containerPort: 8778
-                  protocolo: TCP  
+                  protocolo: TCP
               resources:
                 limits:
                   cpu: ${CPU_LIMIT}
@@ -121,7 +106,6 @@
           name: ${SOURCE_SECRET}
       strategy:
         sourceStrategy:
-          forcePull: true
           incremental: true
           env:
             - name: NEXUS_MIRROR_URL
@@ -170,7 +154,7 @@
       strategy:
         dockerStrategy:
           from:
-            kind: DockerImage
+            kind: ImageStreamTag
             name: ${IMAGEN_RUNTIME}
         type: Docker
       triggers:
@@ -239,6 +223,90 @@
     spec: {}
 
 
+######
+  - apiVersion: v1
+    kind: BuildConfig
+    metadata:
+      labels:
+        app: ${APP_NAME}
+        build: wildfly-thorntail-s2i
+      name: wildfly-thorntail-s2i
+    spec:
+      failedBuildsHistoryLimit: 5
+      nodeSelector: null
+      output:
+        to:
+          kind: ImageStreamTag
+          name: 'wildfly-thorntail-s2i:latest'
+      postCommit: {}
+      resources: {}
+      runPolicy: Serial
+      source:
+        contextDir: jdk11
+        git:
+          ref: jdk11-alpine3.10
+          uri: 'https://github.com/mvilche/wildfly-thorntail.git'
+        type: Git
+      strategy:
+        dockerStrategy:
+          from:
+            kind: ImageStreamTag
+            name: 'alpine:3.10'
+        type: Docker
+      successfulBuildsHistoryLimit: 5
+
+
+  - apiVersion: v1
+    kind: ImageStream
+    metadata:
+      labels:
+        app: ${APP_NAME}
+      name: wildfly-thorntail-s2i
+    spec: {}
+
+  - apiVersion: v1
+    kind: BuildConfig
+    metadata:
+      labels:
+        app: ${APP_NAME}
+      name: wildfly-thorntail-runtime
+    spec:
+      failedBuildsHistoryLimit: 5
+      nodeSelector: null
+      output:
+        to:
+          kind: ImageStreamTag
+          name: 'wildfly-thorntail-runtime:latest'
+      postCommit: {}
+      resources: {}
+      runPolicy: Serial
+      source:
+        contextDir: jre11
+        git:
+          ref: jdk11-alpine3.10
+          uri: 'https://github.com/mvilche/wildfly-thorntail.git'
+        type: Git
+      strategy:
+        dockerStrategy:
+          from:
+            kind: ImageStreamTag
+            name: 'alpine:3.10'
+        type: Docker
+      successfulBuildsHistoryLimit: 5
+
+  - apiVersion: v1
+    kind: ImageStream
+    metadata:
+      labels:
+        app: ${APP_NAME}
+      name: wildfly-thorntail-runtime
+    spec: {}
+
+######
+
+
+
+
   parameters:
     - name: APP_NAME
       displayName: Nombre del microservicio
@@ -246,11 +314,11 @@
       required: true
     - name: IMAGEN_COMPILADORA
       displayName: Imagen compiladora s2i - tiene que existir en docker
-      value: "mvilche/wildfly-thorntail-s21:jdk11-alpine3.10"
+      value: "wildfly-thorntail-s2i:latest"
       required: true
     - name: IMAGEN_RUNTIME
       displayName: Imagen runtime que ejecutara el microservicio - tiene que existir en docker
-      value: "mvilche/wildfly-thorntail-s21:jre11-alpine3.10"
+      value: "wildfly-thorntail-runtime:latest"
       required: true
     - name: REPO_GIT
       displayName: Repositorio git donde se encuentra la aplicacion
@@ -290,16 +358,4 @@
     - name: CPU_LIMIT
       displayName: Limite de cpu que tendra el microservicio Ej 1m ( 1 milicore)
       value: "1m"
-      required: true
-    - name: HEALTH_CHECK
-      displayName: Define el path para el healthcheck
-      value: "/health"
-      required: true
-    - name: HEALT_TIMEOUT
-      displayName: Define el tiempo de timeout en segundos
-      value: '30'
-      required: true
-    - name: HEALT_INITIAL_TIME
-      displayName: Define el tiempo en segundos que demorara en iniciara el healthcheck
-      value: '60'
       required: true
