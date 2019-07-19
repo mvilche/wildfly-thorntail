@@ -1,0 +1,305 @@
+    ##comienzo Template
+  apiVersion: v1
+  kind: Template
+  metadata:
+    name: wildlfy-thorntail-s2i-mvilche
+    labels:
+      template: wildlfy-thorntail-s2i-mvilche
+      autor: "Martin_Fabrizzio_Vilche"
+    annotations:
+      openshift.io/display-name: "wildlfy-thorntail-s2i-mvilche"
+      iconClass: "icon-wildfly"
+      description: >-
+        Compilador de imagenes para microservicios basados en java 8 y maven 3.5.4
+        Martin Fabrizzio Vilche.
+        https://github.com/mvilche.
+
+  objects:
+
+  - apiVersion: v1
+    kind: DeploymentConfig
+    metadata:
+      labels:
+        app: "${APP_NAME}"
+      name: "${APP_NAME}"
+    spec:
+      replicas: 1
+      revisionHistoryLimit: 10
+      selector:
+        app: ${APP_NAME}
+        deploymentconfig: ${APP_NAME}
+      strategy:
+        activeDeadlineSeconds: 21600
+        resources: {}
+        rollingParams:
+          intervalSeconds: 1
+          maxSurge: 25%
+          maxUnavailable: 25%
+          timeoutSeconds: 600
+          updatePeriodSeconds: 1
+        type: Rolling
+      template:
+        metadata:
+          labels:
+            app: ${APP_NAME}
+            deploymentconfig: ${APP_NAME}
+        spec:
+          containers:
+            - env:
+                - name: APP_OPTIONS
+                  value: ${APP_OPTIONS}
+                - name: JAVA_OPTS
+                  value: ${JAVA_OPTS}
+              image: "${APP_NAME}:latest"
+              imagePullPolicy: Always
+              livenessProbe:
+                httpGet:
+                  path: ${HEALTH_CHECK}
+                  port: 8080
+                  scheme: HTTP
+                initialDelaySeconds: ${HEALT_INITIAL_TIME}
+
+                timeoutSeconds: ${HEALT_INITIAL_TIME}
+              readinessProbe:
+                httpGet:
+                  path: ${HEALTH_CHECK}
+                  port: 8080
+                  scheme: HTTP
+                initialDelaySeconds: ${HEALT_TIMEOUT}
+                timeoutSeconds: ${HEALT_TIMEOUT}
+              name: ${APP_NAME}
+              ports:
+                - containerPort: 8080
+                  protocol: TCP
+                - containerPort: 8778
+                  protocolo: TCP  
+              resources:
+                limits:
+                  cpu: ${CPU_LIMIT}
+                  memory: ${MEMORIA_LIMIT}
+              terminationMessagePath: /dev/termination-log
+              terminationMessagePolicy: File
+          dnsPolicy: ClusterFirst
+          restartPolicy: Always
+          schedulerName: default-scheduler
+          terminationGracePeriodSeconds: 30
+      test: false
+      triggers:
+        - type: ConfigChange
+        - imageChangeParams:
+            automatic: true
+            containerNames:
+              - ${APP_NAME}
+            from:
+              kind: ImageStreamTag
+              name: "${APP_NAME}:latest"
+          type: ImageChange
+
+  - apiVersion: v1
+    kind: BuildConfig
+    metadata:
+      labels:
+        app: ${APP_NAME}
+      name: ${APP_NAME}-s2i
+    spec:
+      completionDeadlineSeconds: 1800
+      failedBuildsHistoryLimit: 5
+      nodeSelector: null
+      output:
+        to:
+          kind: ImageStreamTag
+          name: ${APP_NAME}-s2i:latest
+      postCommit: {}
+      resources: {}
+      runPolicy: Serial
+      source:
+        git:
+          uri: ${REPO_GIT}
+          ref: ${BRANCH_GIT}
+        type: Git
+        sourceSecret:
+          name: ${SOURCE_SECRET}
+      strategy:
+        sourceStrategy:
+          forcePull: true
+          incremental: true
+          env:
+            - name: NEXUS_MIRROR_URL
+              value: ${NEXUS_MIRROR_URL}
+            - name: EXTRA_REPO
+              value: ${EXTRA_REPO}
+            - name: MVN_OPTS
+              value: ${MVN_OPTS}
+            - name: JAVA_OPTS
+              value: ${JAVA_OPTS}
+          from:
+            kind: DockerImage
+            name: ${IMAGEN_COMPILADORA}
+        type: Source
+      successfulBuildsHistoryLimit: 5
+      triggers:
+        - type: ConfigChange
+
+
+
+
+  - apiVersion: v1
+    kind: BuildConfig
+    metadata:
+      labels:
+        app: ${APP_NAME}
+      name: ${APP_NAME}-runtime
+    spec:
+      completionDeadlineSeconds: 1800
+      output:
+        to:
+          kind: ImageStreamTag
+          name: ${APP_NAME}:latest
+      source:
+        type: Dockerfile
+        dockerfile: |-
+          FROM ${IMAGEN_RUNTIME}
+          COPY app.jar /opt/app-root/app.jar
+        images:
+        - from:
+            kind: ImageStreamTag
+            name: ${APP_NAME}-s2i:latest
+          paths:
+          - sourcePath: /opt/app-root/app.jar
+            destinationDir: "."
+      strategy:
+        dockerStrategy:
+          from:
+            kind: DockerImage
+            name: ${IMAGEN_RUNTIME}
+        type: Docker
+      triggers:
+      - type: "imageChange"
+        imageChange:
+          from:
+            kind: "ImageStreamTag"
+            name: "${APP_NAME}-s2i:latest"
+
+
+
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      labels:
+        app: ${APP_NAME}
+      name: ${APP_NAME}
+    spec:
+      ports:
+        - name: 8080-tcp
+          port: 8080
+          protocol: TCP
+          targetPort: 8080
+        - name: jolokia
+          port: 8778
+          protocol: TCP
+          targetPort: 8778
+      selector:
+        app: ${APP_NAME}
+        deploymentconfig: ${APP_NAME}
+      sessionAffinity: None
+      type: ClusterIP
+
+
+  - apiVersion: v1
+    kind: Route
+    metadata:
+      labels:
+        app: ${APP_NAME}
+      name: ${APP_NAME}
+    spec:
+      host: ${DOMINIO}
+      port:
+        targetPort: 8080-tcp
+      to:
+        kind: Service
+        name: ${APP_NAME}
+        weight: 100
+      wildcardPolicy: None
+
+
+  - apiVersion: v1
+    kind: ImageStream
+    metadata:
+      labels:
+        app: ${APP_NAME}
+      name: ${APP_NAME}
+    spec: {}
+
+  - apiVersion: v1
+    kind: ImageStream
+    metadata:
+      labels:
+        app: ${APP_NAME}
+      name: ${APP_NAME}-s2i
+    spec: {}
+
+
+  parameters:
+    - name: APP_NAME
+      displayName: Nombre del microservicio
+      value: ''
+      required: true
+    - name: IMAGEN_COMPILADORA
+      displayName: Imagen compiladora s2i - tiene que existir en docker
+      value: "mvilche/wildfly-thorntail-s21:jdk11-alpine3.10"
+      required: true
+    - name: IMAGEN_RUNTIME
+      displayName: Imagen runtime que ejecutara el microservicio - tiene que existir en docker
+      value: "mvilche/wildfly-thorntail-s21:jre11-alpine3.10"
+      required: true
+    - name: REPO_GIT
+      displayName: Repositorio git donde se encuentra la aplicacion
+      value: ""
+      required: true
+    - name: BRANCH_GIT
+      displayName: Nombre del branch del repositorio
+      value: ""
+      required: true
+    - name: SOURCE_SECRET
+      displayName: Nombre del secret para autenticacion con el git
+      value: ""
+    - name: MVN_OPTS
+      displayName: Argumentos adicionales maven. Valores por defecto (clean package -Dfile.encoding=UTF-8 -DskipTests=true)
+      value: ""
+    - name: NEXUS_MIRROR_URL
+      displayName: Especifique repositorio nexus para la descarga de las dependencias. Recomendado
+      value: ""
+    - name: EXTRA_REPO
+      displayName: Repositorio git adicional para compilar previo al microservicio. Ej shared
+      value: ""
+    - name: DOMINIO
+      displayName: Dominio de acceso al route
+      value: "miapp.openshift.cluster"
+      required: true
+    - name: JAVA_OPTS
+      displayName: Parametros jvm para el inicio del microservicio
+      value: "-Dfile.encoding=UTF8 -XX:MaxRAMFraction=1 -XX:+ExitOnOutOfMemoryError -XX:+UnlockExperimentalVMOptions -Djava.net.preferIPv4Stack=true"
+      required: true
+    - name: APP_OPTIONS
+      displayName: Argumento adicional al iniciar el wildfly swarm. Ej Project default externo (-s /opt/config/app.yaml)
+      value: ""
+    - name: MEMORIA_LIMIT
+      displayName: limite de memoria ram que tendra el microservicio. Ej 256Mi (256 megabytes)
+      value: "256Mi"
+      required: true
+    - name: CPU_LIMIT
+      displayName: Limite de cpu que tendra el microservicio Ej 1m ( 1 milicore)
+      value: "1m"
+      required: true
+    - name: HEALTH_CHECK
+      displayName: Define el path para el healthcheck
+      value: "/health"
+      required: true
+    - name: HEALT_TIMEOUT
+      displayName: Define el tiempo de timeout en segundos
+      value: '30'
+      required: true
+    - name: HEALT_INITIAL_TIME
+      displayName: Define el tiempo en segundos que demorara en iniciara el healthcheck
+      value: '60'
+      required: true

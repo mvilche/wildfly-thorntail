@@ -1,3 +1,0 @@
-FROM runtime
-COPY app.jar /opt/app-root/app.jar
-
