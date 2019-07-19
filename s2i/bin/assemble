@@ -9,7 +9,12 @@
 
 set -e
 
+
 shopt -u dotglob
+
+export JAVA_OPTS="-Dfile.encoding=UTF8 -XX:MaxRAMFraction=1 -XX:+ExitOnOutOfMemoryError -XX:+UnlockExperimentalVMOptions -Djava.net.preferIPv4Stack=true"
+
+
 
 if [[ "$1" == "-h" ]]; then
 	exec /usr/libexec/s2i/usage
@@ -82,6 +87,19 @@ echo "COMPILADO EXTRA_REPO FINALIZADO - LIMPIANDO DIRECTORIOS.." && rm -rf /opt/
 fi
 
 echo "---> COMPILANDO CODIGO FUENTE..."
+
+if [ -z "$OVERRIDE_MVN_OPTS" ]; then
+echo "OVERRIDE_MVN_OPTS ENCONTRADO - UTILIZANDO LOS COMANDOS INTRODUCIDOS PARA COMPILAR"
+cd /opt/src && ${OVERRIDE_MVN_OPTS}
+
+ERR=$?
+    if [ $ERR -ne 0 ]; then
+echo "LA COMPILACION SALIO CON CODIGO DE ERROR $ERR"
+exit $ERR
+fi
+
+else
+
 cd /opt/src && mvn clean package -Dfile.encoding=UTF-8 -DskipTests=true ${MVN_OPTS}
 
 ERR=$?
@@ -90,6 +108,6 @@ echo "LA COMPILACION SALIO CON CODIGO DE ERROR $ERR"
 exit $ERR
 fi
 
-
+fi
 echo "---> COPIANDO APLICACION GENERADA AL DIRECTORIO DE DEPLOY..."
 find . -name '*-thorntail.jar' | xargs cp -t . || find . -name '*-swarm.jar' | xargs cp -t . && mv *.jar /opt/app-root/app.jar && echo "APP INSTALADA!"

@@ -32,6 +32,7 @@ if [ -z "$JAVA_OPTS" ]; then
 
 	echo "···································································································"
 	echo "VARIABLE JAVA_OPTS NO ENCONTRADA"
+	export JAVA_OPTS="-Dfile.encoding=UTF8 -XX:MaxRAMFraction=1 -XX:+ExitOnOutOfMemoryError -XX:+UnlockExperimentalVMOptions -Djava.net.preferIPv4Stack=true"
 	echo "···································································································"
 else
 	echo "···································································································"
@@ -56,4 +57,4 @@ fi
 	echo "INICIANDO APP..."
 	echo "···································································································"
 
-exec java $JAVA_OPTS -jar /opt/app-root/*.jar $APP_OPTIONS
+exec java -javaagent:/usr/libexec/s2i/jolokia-jvm-1.6.2-agent.jar=host=0.0.0.0 $JAVA_OPTS -jar /opt/app-root/*.jar $APP_OPTIONS

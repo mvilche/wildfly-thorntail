@@ -1,4 +1,4 @@
-# Wildfly thorntail s2i images
+# Wildfly thorntail s2i images 
 
 [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
@@ -7,7 +7,7 @@
 
 - Non-root
 - Openshift compatible
-
+- Runtime image with Jolokia Agent
 
 ### Variables
 
