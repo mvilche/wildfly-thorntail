@@ -99,6 +99,12 @@ else
 echo "MVN_OPTS_COMMAND NO ENCONTRADO - UTILIZANDO VALORES POR DEFECTO PARA LA COMPILACION: "
 echo "mvn clean package -Dfile.encoding=UTF-8 -DskipTests=true"
 cd /opt/src && mvn clean package -Dfile.encoding=UTF-8 -DskipTests=true
+
+ERR=$?
+    if [ $ERR -ne 0 ]; then
+echo "LA COMPILACION SALIO CON CODIGO DE ERROR $ERR"
+exit $ERR
+
 fi
 
 echo "---> COPIANDO APLICACION GENERADA AL DIRECTORIO DE DEPLOY..."
