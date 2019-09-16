@@ -1,0 +1,9 @@
+<module xmlns="urn:jboss:module:1.1" name="com.oracle">
+<resources>
+<resource-root path="ojdbc8.jar"/>
+<!--  Insert resources here  -->
+</resources>
+<dependencies>
+<module name="javax.api"/>
+</dependencies>
+</module>

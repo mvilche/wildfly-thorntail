@@ -7,7 +7,8 @@
 #	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
 #
 
-
+export APP_DIR=/opt/app-root
+export OPENJDK=11
 
 	echo "···································································································"
 	echo "MARTIN FABRIZZIO VILCHE - https://github.com/mvilche"
@@ -27,33 +28,10 @@ else
 	echo $TIMEZONE > /etc/timezone
 fi
 
-
-if [ -z "$JAVA_OPTS" ]; then
-
-	echo "···································································································"
-	echo "VARIABLE JAVA_OPTS NO ENCONTRADA"
-	echo "···································································································"
-else
-	echo "···································································································"
-	echo "VARIABLE JAVA_OPTS ENCONTRADA: $JAVA_OPTS"
-	echo "···································································································"
-fi
-
-if [ -z "$APP_OPTIONS" ]; then
-
-	echo "···································································································"
-	echo "VARIABLE APP_OPTIONS NO ENCONTRADA"
-	echo "···································································································"
-else
-	echo "···································································································"
-	echo "VARIABLE APP_OPTIONS ENCONTRADA: $APP_OPTIONS"
-	echo "···································································································"
-fi
-
-
-
 	echo "···································································································"
 	echo "INICIANDO APP..."
 	echo "···································································································"
 
-exec java $JAVA_OPTS -jar /opt/app-root/app.jar $APP_OPTIONS
+
+keytool -genkey -keyalg RSA -alias selfsigned -keystore $APP_DIR/jolokia.jks -storepass password -validity 360 -keysize 2048 -dname "cn=jolokia, ou=jolokia, o=jolokia, c=jolokia"
+exec java -javaagent:/usr/libexec/s2i/jolokia-jvm-1.6.2-agent.jar=host=0.0.0.0,protocol=https,keystore=$APP_DIR/jolokia.jks,keystorePassword=password -XX:-UseContainerSupport -Dfile.encoding=UTF8 -XX:+ExitOnOutOfMemoryError -Djava.net.preferIPv4Stack=true $JAVA_OPTS -jar /opt/app-root/app.jar $APP_OPTIONS

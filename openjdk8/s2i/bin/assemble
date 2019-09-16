@@ -28,7 +28,7 @@ if [ -d /tmp/artifacts/.m2 ]; then
   mv /tmp/artifacts/.m2 /home/s2i/
 fi
 
-echo "---> INSTALANDO CODIGO FUENTE..." 
+echo "---> INSTALANDO CODIGO FUENTE..."
 mkdir /opt/src
 cp -Rf /tmp/src/* /opt/src/
 
@@ -73,7 +73,7 @@ else
 echo "EXTRA_REPO ENCONTRADO - COMPILANDO REPOSITORIO ADICIONAL.."
 mkdir /opt/extra_repo && cd /opt/extra_repo && \
 git clone $EXTRA_REPO . && \
-mvn clean install -Dfile.encoding=UTF-8 -DskipTests=true ${MVN_OPTS}
+mvn clean install -XX:MaxRAMFraction=1 -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -Dfile.encoding=UTF8 -XX:+ExitOnOutOfMemoryError ${MVN_OPTS}
 
 ERR=$?
     if [ $ERR -ne 0 ]; then
@@ -81,11 +81,11 @@ ERR=$?
 exit $ERR
 fi
 
-echo "COMPILADO EXTRA_REPO FINALIZADO - LIMPIANDO DIRECTORIOS.." && rm -rf /opt/extra_repo 
+echo "COMPILADO EXTRA_REPO FINALIZADO - LIMPIANDO DIRECTORIOS.." && rm -rf /opt/extra_repo
 fi
 
 echo "---> COMPILANDO CODIGO FUENTE..."
-cd /opt/src && mvn clean package -Dfile.encoding=UTF-8 -DskipTests=true ${MVN_OPTS}
+cd /opt/src && mvn clean package -XX:MaxRAMFraction=1 -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -Dfile.encoding=UTF8 -XX:+ExitOnOutOfMemoryError ${MVN_OPTS}
 
 ERR=$?
     if [ $ERR -ne 0 ]; then
@@ -96,4 +96,4 @@ fi
 
 echo "---> COPIANDO APLICACION GENERADA AL DIRECTORIO DE DEPLOY..."
 find . -name '*-thorntail.jar' | xargs cp -t . || find . -name '*-swarm.jar' | xargs cp -t . && mv *.jar /opt/app-root/app.jar && echo "APP INSTALADA!"
-rm -rf /opt/src
+cd $HOME && rm -rf /opt/src
