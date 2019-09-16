@@ -115,7 +115,7 @@
               value: ${JAVA_OPTS}
           from:
             kind: ImageStreamTag
-            name: ${IMAGEN_COMPILADORA}
+            name: wildfly-thorntail-s2i:latest
         type: Source
       successfulBuildsHistoryLimit: 5
       triggers:
@@ -139,8 +139,11 @@
       source:
         type: Dockerfile
         dockerfile: |-
-          FROM ${IMAGEN_RUNTIME}
+          FROM wildfly-thorntail-runtime:latest
+          USER root
           COPY app.jar /opt/app-root/app.jar
+          RUN chown 1001:0 /opt/app-root/app.jar
+          USER 1001
         images:
         - from:
             kind: ImageStreamTag
@@ -152,7 +155,7 @@
         dockerStrategy:
           from:
             kind: ImageStreamTag
-            name: ${IMAGEN_RUNTIME}
+            name: wildfly-thorntail-runtime:latest
         type: Docker
       triggers:
       - type: "imageChange"
@@ -323,6 +326,7 @@
     - name: SOURCE_SECRET
       displayName: Nombre del secret para autenticacion con el git
       value: ""
+      required: true      
     - name: MVN_OPTS
       displayName: Argumentos adicionales maven. Valores por defecto (clean package -Dfile.encoding=UTF-8 -DskipTests=true)
       value: ""
@@ -332,11 +336,9 @@
     - name: EXTRA_REPO
       displayName: Repositorio git adicional para compilar previo al microservicio. Ej shared
       value: ""
-      required: true
     - name: JAVA_OPTS
       displayName: Parametros jvm para el inicio del microservicio
       value: ""
-      required: true
     - name: APP_OPTIONS
       displayName: Argumento adicional al iniciar el wildfly swarm. Ej Project default externo (-s /opt/config/app.yaml)
       value: ""   
