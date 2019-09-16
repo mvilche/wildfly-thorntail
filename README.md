@@ -1,5 +1,4 @@
 # Wildfly thorntail s2i images 
-
 [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
 
@@ -21,8 +20,6 @@
 | EXTRA_REPO | Define url repositorio git extra compila previo |
 | TAG_VERSION | Variable usada en el proceso de build para definir la version |
 | MVN_OPTS | Variable usada argumentos adicionales maven |
-
-
 
 
 
