@@ -1,6 +1,6 @@
 FROM alpine:3.10
 
-ENV MAVEN_VERSION=3.6.1 \
+ENV MAVEN_VERSION=3.5.4 \
 JDK_VERSION=openjdk8
 
 LABEL autor="Martin Vilche <mfvilche@gmail.com>" \
