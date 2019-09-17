@@ -120,6 +120,11 @@
       successfulBuildsHistoryLimit: 5
       triggers:
         - type: ConfigChange
+      - type: "imageChange"
+        imageChange:
+          from:
+            kind: "ImageStreamTag"
+            name: "wildfly-thorntail-s2i:latest"
 
 
 
@@ -309,7 +314,7 @@
   parameters:
     - name: APP_NAME
       displayName: Nombre del microservicio
-      value: ''      
+      value: ''
       required: true
     - name: VERSION_JDK
       displayName: Versión de OPENJDK
@@ -326,7 +331,7 @@
     - name: SOURCE_SECRET
       displayName: Nombre del secret para autenticacion con el git
       value: ""
-      required: true      
+      required: true
     - name: MVN_OPTS
       displayName: Argumentos adicionales maven. Valores por defecto (clean package -Dfile.encoding=UTF-8 -DskipTests=true)
       value: ""
@@ -341,4 +346,4 @@
       value: ""
     - name: APP_OPTIONS
       displayName: Argumento adicional al iniciar el wildfly swarm. Ej Project default externo (-s /opt/config/app.yaml)
-      value: ""   
+      value: ""
