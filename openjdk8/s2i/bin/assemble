@@ -67,13 +67,15 @@ fi
 
 
 
+export JAVA_OPTS="-XX:MaxRAMFraction=1 -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -Dfile.encoding=UTF8 -XX:+ExitOnOutOfMemoryError"
+
 if [ -z "$EXTRA_REPO" ]; then
 echo "NO EXTRA_REPO ENCONTRADO"
 else
 echo "EXTRA_REPO ENCONTRADO - COMPILANDO REPOSITORIO ADICIONAL.."
 mkdir /opt/extra_repo && cd /opt/extra_repo && \
 git clone $EXTRA_REPO . && \
-mvn clean install -XX:MaxRAMFraction=1 -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -Dfile.encoding=UTF8 -XX:+ExitOnOutOfMemoryError ${MVN_OPTS}
+mvn clean install ${MVN_OPTS}
 
 ERR=$?
     if [ $ERR -ne 0 ]; then
@@ -85,7 +87,7 @@ echo "COMPILADO EXTRA_REPO FINALIZADO - LIMPIANDO DIRECTORIOS.." && rm -rf /opt/
 fi
 
 echo "---> COMPILANDO CODIGO FUENTE..."
-cd /opt/src && mvn clean package -XX:MaxRAMFraction=1 -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -Dfile.encoding=UTF8 -XX:+ExitOnOutOfMemoryError ${MVN_OPTS}
+cd /opt/src && mvn clean package ${MVN_OPTS}
 
 ERR=$?
     if [ $ERR -ne 0 ]; then
