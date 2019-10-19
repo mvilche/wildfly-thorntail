@@ -11,7 +11,7 @@ LABEL autor="Martin Vilche <mfvilche@gmail.com>" \
       org.jboss.deployments-dir="/opt/app-root" \
       io.openshift.s2i.scripts-url="image:///usr/libexec/s2i"
 
-RUN apk add --update --no-cache $JDK_VERSION wget bash git busybox-extras which openssh shadow busybox-suid coreutils tzdata msttcorefonts-installer fontconfig
+RUN apk add --update --no-cache $JDK_VERSION wget bash git busybox-extras which curl openssh shadow busybox-suid coreutils tzdata msttcorefonts-installer fontconfig
 RUN mkdir -p /opt/app-root /opt/maven && rm -rf /etc/localtime && \
 wget -q http://www-eu.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz && \
 tar xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz -C /opt/maven && rm apache-maven-${MAVEN_VERSION}-bin.tar.gz && \

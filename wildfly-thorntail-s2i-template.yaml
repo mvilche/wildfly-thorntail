@@ -120,11 +120,11 @@
       successfulBuildsHistoryLimit: 5
       triggers:
         - type: ConfigChange
-      - type: "imageChange"
-        imageChange:
-          from:
-            kind: "ImageStreamTag"
-            name: "wildfly-thorntail-s2i:latest"
+        - type: "imageChange"
+          imageChange:
+            from:
+              kind: "ImageStreamTag"
+              name: "wildfly-thorntail-s2i:latest"
 
 
 

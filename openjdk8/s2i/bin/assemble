@@ -67,7 +67,7 @@ fi
 
 
 
-export JAVA_OPTS="-XX:MaxRAMFraction=1 -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -Dfile.encoding=UTF8 -XX:+ExitOnOutOfMemoryError"
+export JAVA_OPTS="-Djava.awt.headless=true -XX:MaxRAMFraction=1 -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -Dfile.encoding=UTF8 -XX:+ExitOnOutOfMemoryError"
 
 if [ -z "$EXTRA_REPO" ]; then
 echo "NO EXTRA_REPO ENCONTRADO"
