@@ -17,42 +17,42 @@
   objects:
 
 
-    - apiVersion: v1
-      data:
-        app.yaml: |-
-          swarm:
-            deployment:
-              example-jaas-basic.war:
-                web:
-                  login-config:
-                    auth-method: BASIC
-                    security-domain: my-domain
-                  security-constraints:
-                    - url-pattern: /*
-                      methods: [GET]
-                      roles: [admin, user]
-            security:
-              security-domains:
-                my-domain:
-                  classic-authentication:
-                    login-modules:
-                      Database:
-                        code: Database
-                        flag: required
-                        module-options:
-                          dsJndiName: java:jboss/datasources/MyDS
-                          principalsQuery: SELECT password FROM REST_DB_ACCESS WHERE name=?
-                          rolesQuery: SELECT role, 'Roles' FROM REST_DB_ACCESS WHERE name=?
-            datasources:
-              data-sources:
-                MyDS:
-                  driver-name: h2
-                  connection-url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-                  user-name: sa
-                  password: sa
-      kind: ConfigMap
-      metadata:
-        name: ${APP_NAME}-project-defaults
+  - apiVersion: v1
+    data:
+      app.yaml: |-
+        swarm:
+          deployment:
+            example-jaas-basic.war:
+              web:
+                login-config:
+                  auth-method: BASIC
+                  security-domain: my-domain
+                security-constraints:
+                  - url-pattern: /*
+                    methods: [GET]
+                    roles: [admin, user]
+          security:
+            security-domains:
+              my-domain:
+                classic-authentication:
+                  login-modules:
+                    Database:
+                      code: Database
+                      flag: required
+                      module-options:
+                        dsJndiName: java:jboss/datasources/MyDS
+                        principalsQuery: SELECT password FROM REST_DB_ACCESS WHERE name=?
+                        rolesQuery: SELECT role, 'Roles' FROM REST_DB_ACCESS WHERE name=?
+          datasources:
+            data-sources:
+              MyDS:
+                driver-name: h2
+                connection-url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+                user-name: sa
+                password: sa
+    kind: ConfigMap
+    metadata:
+      name: ${APP_NAME}-project-defaults
 
 
 
@@ -67,7 +67,7 @@
       replicas: 1
       revisionHistoryLimit: 10
       selector:
-        app: ${APP_NAME}
+        app: wildfly-thorntail-s2i
         deploymentconfig: ${APP_NAME}
       strategy:
         activeDeadlineSeconds: 21600
@@ -82,7 +82,7 @@
       template:
         metadata:
           labels:
-            app: ${APP_NAME}
+            app: wildfly-thorntail-s2i
             deploymentconfig: ${APP_NAME}
         spec:
           containers:
@@ -91,6 +91,8 @@
                   value: '-s /opt/config/app.yaml'
                 - name: JAVA_OPTS
                   value: ${JAVA_OPTS}
+                - name: TIMEZONE
+                  value: America/Montevideo
               image: "${APP_NAME}:latest"
               imagePullPolicy: Always
               name: ${APP_NAME}
@@ -128,7 +130,7 @@
     kind: BuildConfig
     metadata:
       labels:
-        app: ${APP_NAME}
+        app: wildfly-thorntail-s2i
       name: ${APP_NAME}-s2i
     spec:
       completionDeadlineSeconds: 1800
@@ -181,7 +183,7 @@
     kind: BuildConfig
     metadata:
       labels:
-        app: ${APP_NAME}
+        app: wildfly-thorntail-s2i
       name: ${APP_NAME}-runtime
     spec:
       completionDeadlineSeconds: 1800
@@ -223,7 +225,7 @@
     kind: Service
     metadata:
       labels:
-        app: ${APP_NAME}
+        app: wildfly-thorntail-s2i
       name: ${APP_NAME}
     spec:
       ports:
@@ -236,7 +238,7 @@
           protocol: TCP
           targetPort: 8778
       selector:
-        app: ${APP_NAME}
+        app: wildfly-thorntail-s2i
         deploymentconfig: ${APP_NAME}
       sessionAffinity: None
       type: ClusterIP
@@ -246,7 +248,7 @@
     kind: Route
     metadata:
       labels:
-        app: ${APP_NAME}
+        app: wildfly-thorntail-s2i
       name: ${APP_NAME}
     spec:
       port:
@@ -262,7 +264,7 @@
     kind: ImageStream
     metadata:
       labels:
-        app: ${APP_NAME}
+        app: wildfly-thorntail-s2i
       name: ${APP_NAME}
     spec: {}
 
@@ -270,7 +272,7 @@
     kind: ImageStream
     metadata:
       labels:
-        app: ${APP_NAME}
+        app: wildfly-thorntail-s2i
       name: ${APP_NAME}-s2i
     spec: {}
 
@@ -280,7 +282,7 @@
     kind: BuildConfig
     metadata:
       labels:
-        app: ${APP_NAME}
+        app: wildfly-thorntail-s2i
         build: wildfly-thorntail-s2i
       name: wildfly-thorntail-s2i
     spec:
@@ -312,7 +314,7 @@
     kind: ImageStream
     metadata:
       labels:
-        app: ${APP_NAME}
+        app: wildfly-thorntail-s2i
       name: wildfly-thorntail-s2i
     spec: {}
 
@@ -320,7 +322,7 @@
     kind: BuildConfig
     metadata:
       labels:
-        app: ${APP_NAME}
+        app: wildfly-thorntail-s2i
       name: wildfly-thorntail-runtime
     spec:
       failedBuildsHistoryLimit: 5
@@ -350,7 +352,7 @@
     kind: ImageStream
     metadata:
       labels:
-        app: ${APP_NAME}
+        app: wildfly-thorntail-s2i
       name: wildfly-thorntail-runtime
     spec: {}
 
