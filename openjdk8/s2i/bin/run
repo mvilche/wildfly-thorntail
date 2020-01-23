@@ -10,11 +10,6 @@
 export APP_DIR=/opt/app-root
 export OPENJDK=8
 
-	echo "···································································································"
-	echo "MARTIN FABRIZZIO VILCHE - https://github.com/mvilche"
-	echo "···································································································"
-
-
 if [ -z "$TIMEZONE" ]; then
 	echo "···································································································"
 	echo "VARIABLE TIMEZONE NO SETEADA - INICIANDO CON VALORES POR DEFECTO"
@@ -33,5 +28,5 @@ fi
 	echo "···································································································"
 
 
-keytool -genkey -keyalg RSA -alias selfsigned -keystore $APP_DIR/jolokia.jks -storepass password -validity 360 -keysize 2048 -dname "cn=jolokia, ou=jolokia, o=jolokia, c=jolokia"
+keytool -genkey -keyalg RSA -alias selfsigned -keystore $APP_DIR/jolokia.jks -storepass password -validity 360 -keysize 2048 -dname "cn=jolokia, ou=jolokia, o=jolokia, c=jolokia" &> /dev/null
 exec java -javaagent:/usr/libexec/s2i/jolokia-jvm-1.6.2-agent.jar=host=0.0.0.0,protocol=https,keystore=$APP_DIR/jolokia.jks,keystorePassword=password -XX:MaxRAMFraction=1 -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -Dfile.encoding=UTF8 -XX:+ExitOnOutOfMemoryError -Djava.net.preferIPv4Stack=true $JAVA_OPTS -jar /opt/app-root/app.jar $APP_OPTIONS
