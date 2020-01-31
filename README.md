@@ -21,7 +21,9 @@
 | ------ | ------ |
 | TIMEZONE | Set Timezone (America/Montevideo, America/El_salvador) |
 | JAVA_OPTS | set JAVA_OPTS options|
-| APP_OPTIONS | set extra arguments when applicattion start|
+| APP_OPTIONS | set extra arguments when applicattion start |
+| WAITFOR_HOST | set name host |
+| WAITFOR_PORT | set port for WAITFOR_HOST |
 
 
 
