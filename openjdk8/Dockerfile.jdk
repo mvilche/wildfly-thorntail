@@ -1,4 +1,4 @@
-FROM alpine:3.10
+FROM alpine:3.11
 
 ENV MAVEN_VERSION=3.5.4 \
 JDK_VERSION=openjdk8
