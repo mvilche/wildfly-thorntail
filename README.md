@@ -11,7 +11,7 @@
 - Non-root
 - Openshift compatible
 - S2i build images
-- Exta repository 
+- Maven
 - Jolokia java monitoring
 
 ### Deploy Environments 
