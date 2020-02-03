@@ -182,8 +182,5 @@
       required: true
     - name: JAVA_OPTS
       displayName: Parametros jvm para el inicio del microservicio
-      value: ""
-    - name: TIMEZONE
-      displayName: Timezone definido 
-      value: ""      
+      value: ""    
 
