@@ -2,9 +2,9 @@
   apiVersion: v1
   kind: Template
   metadata:
-    name: wildlfy-thorntail-s2i-mvilche
+    name: wildlfy-thorntail-s2i-qa-mvilche
     labels:
-      template: wildlfy-thorntail-s2i-mvilche
+      template: wildlfy-thorntail-s2i-qa-mvilche
       autor: "Martin_Fabrizzio_Vilche"
     annotations:
       openshift.io/display-name: "wildlfy-thorntail-s2i-qa"
