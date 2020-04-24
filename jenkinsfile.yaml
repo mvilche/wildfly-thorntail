@@ -1,0 +1,26 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+    app: demo-pipeline
+    name: demo
+  name: demo-pipeline
+spec:
+  runPolicy: Serial
+  source:
+    type: None
+  strategy:
+    jenkinsPipelineStrategy:
+      jenkinsfile: |-
+        node('') {
+          stage 'COMPILANDO EN DESARROLLO'
+            openshiftBuild(namespace:'martin-dev',buildConfig: 'demo-s2i', showBuildLogs: 'true')
+          stage 'DESPLEGANDO VERSION EN DESARROLLO'
+            openshiftDeploy(namespace:'martin-dev',deploymentConfig: 'demo')
+          stage 'DESPLEGANDO EN QA'
+            input 'DESEA DESPLEGAR LA VERSION CONSTRUIDA EN DESARROLLO EN QA ?'
+            openshiftTag(namespace: 'martin-dev', sourceStream: 'demo',  sourceTag: 'latest', destinationNamespace: 'martin-qa', destinationStream: 'demo', destinationTag: 'latest')
+            openshiftDeploy(namespace:'martin-qa',deploymentConfig: 'demo')
+        }
+    type: JenkinsPipeline
+  triggers: []
