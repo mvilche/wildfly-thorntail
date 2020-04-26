@@ -1,6 +1,7 @@
 FROM alpine:3.11
 
-ENV JDK_VERSION=openjdk11-jre
+ENV JDK_VERSION=openjdk11-jre \
+JAVA_HOME=/usr/lib/jvm/default-jvm
 
 LABEL autor="Martin Vilche <mfvilche@gmail.com>" \
       io.k8s.description="Runtime image jdk alpine" \
