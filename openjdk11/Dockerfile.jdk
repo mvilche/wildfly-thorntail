@@ -26,7 +26,8 @@ chown -R 1001 /opt /home/s2i /usr/libexec/s2i /etc/localtime /etc/timezone  && \
 chgrp -R 0 /opt /home/s2i /usr/libexec/s2i /etc/localtime /etc/timezone  && \
 chmod -R g=u /opt /usr/libexec/s2i /etc/localtime /etc/timezone
 WORKDIR /opt/app-root
-ENV HOME /home/s2i
+ENV HOME=/home/s2i \
+JAVA_HOME=/usr/lib/jvm/default-jvm
 USER 1001
 EXPOSE 8080
 CMD ["/usr/libexec/s2i/usage"]
