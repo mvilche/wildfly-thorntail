@@ -12,7 +12,7 @@ set -e
 
 shopt -u dotglob
 
-export JAVA_OPTS="-XX:-UseContainerSupport -XX:InitialRAMPercentage=50 -XX:MaxRAMPercentage=90 -Dfile.encoding=UTF8 -XX:+ExitOnOutOfMemoryError"
+export JAVA_OPTS="-XX:-UseContainerSupport -XX:MaxRAMPercentage=90.0 -Dfile.encoding=UTF8 -XX:+ExitOnOutOfMemoryError"
 if [[ "$1" == "-h" ]]; then
   exec /usr/libexec/s2i/usage
 fi
