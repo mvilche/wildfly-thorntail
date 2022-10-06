@@ -1,4 +1,7 @@
-# Java Wildfly Thorntail S2I Images Alpine Linux
+# Java Wildfly Thorntail S2I Images Alpine Linux (DEPRECTAED)
+
+
+DEPRECATED IN FAVOR OF https://github.com/mvilche/java-microservices-s2i
 
 ![Docker Stars](https://img.shields.io/docker/stars/mvilche/wildfly-thorntail-s21.svg)
 ![Docker Pulls](https://img.shields.io/docker/pulls/mvilche/wildfly-thorntail-s21.svg)
